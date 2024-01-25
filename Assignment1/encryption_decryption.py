@@ -1,4 +1,5 @@
 import string
+from itertools import product
 
 lowercase_letters = string.ascii_lowercase 
 Char_Int_Dict = {}
@@ -72,7 +73,39 @@ def poly_decryption(ciphertext,key):
         print("Successful decrypt")
         return plaintext
     else:
-        print("Failure")
+        # print("Failure")
         return None
-ciphertext = poly_encryption("wearediscoveredsaveyourselfover",hash_func("wearediscoveredsaveyourselfover"),"deceptive",)
-plaintext = poly_decryption(ciphertext,"deceptiv")
+    
+def generate_string_combinations(length):
+    alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    combinations = [''.join(p) for p in product(alphabet, repeat=length)]
+    return combinations
+
+original_text = "wearediscoveredsaveyourselfover"
+hash_value = hash_func(original_text)
+sender_key = "decc"
+ciphertext = poly_encryption(original_text,hash_value,sender_key)
+print("\n-----Sender Space-----")
+print("Original text: ",original_text)
+print("Hash Value: ",hash_value)
+print("key: ", sender_key)
+receiver_key = "deca"
+plaintext = poly_decryption(ciphertext,receiver_key)
+print("\n-----Receiver Space-----")
+print("Encrypted Text: ", ciphertext)
+print("key: ",receiver_key)
+if(plaintext==None):
+    print("Failure to decrypt at key: ", receiver_key)
+else:
+    print("Plaintext: ", plaintext)
+
+# Brute Force Attack
+print("\n-----Attacker Space-----")
+result = generate_string_combinations(4)
+for i in result:
+    if(poly_decryption(ciphertext,i)==None):
+        continue
+    else:
+        print('key is ',i)
+        break
+    
