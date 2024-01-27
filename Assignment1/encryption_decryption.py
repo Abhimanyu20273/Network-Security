@@ -56,7 +56,6 @@ def poly_encryption(plaintext,hashstring,key):
     return ciphertext
 
 def poly_decryption(ciphertext,key):
-   
     ciphertext_arr = mapping_string_int(ciphertext)
     key_arr = mapping_string_int(key)
     new_arr = []
@@ -81,31 +80,48 @@ def generate_string_combinations(length):
     combinations = [''.join(p) for p in product(alphabet, repeat=length)]
     return combinations
 
-original_text = "wearediscoveredsaveyourselfover"
-hash_value = hash_func(original_text)
+sentences = [
+    "aliceenjoyedherwalkinthemagicalforestdiscoveringtinycreaturesandcolorfulflowerswhilelisteningtothebirdsinginginthebackground",
+    "curiousmindsexploreunknownworldsfindinghiddenknowledgeandunlockingmysteriesintheuniverseamidstchallengesandadventures",
+    "playfulpuppieschasebutterfliesandrollinthesunnyfieldscreatingjoyousmomentsfilledwithlaughterandboundlessenergy",
+    "wanderingthroughthelabyrinthofimaginationchildrencreatewhimsicalworldsfullofmagicalcreaturesandfantasticaladventures",
+    "moonlightdancesreflectmysticalbeautyacrossripplingwatersinspiringpoeticthoughtsandsweetmelodiesunderthestarrycanopyofnight"
+]
+
 sender_key = "decc"
-ciphertext = poly_encryption(original_text,hash_value,sender_key)
+ciphertext_list = []
 print("\n-----Sender Space-----")
-print("Original text: ",original_text)
-print("Hash Value: ",hash_value)
-print("key: ", sender_key)
-receiver_key = "deca"
-plaintext = poly_decryption(ciphertext,receiver_key)
+for i in sentences:
+    original_text = i
+    hash_value = hash_func(original_text)
+    ciphertext = poly_encryption(original_text,hash_value,sender_key)
+    print("Original text: ",original_text)
+    print("Hash Value: ",hash_value)
+    print("key: ", sender_key,"\n")
+    ciphertext_list.append(ciphertext)
+
+receiver_key = "decc"   
 print("\n-----Receiver Space-----")
-print("Encrypted Text: ", ciphertext)
-print("key: ",receiver_key)
-if(plaintext==None):
-    print("Failure to decrypt at key: ", receiver_key)
-else:
-    print("Plaintext: ", plaintext)
+for i in ciphertext_list:
+    plaintext = poly_decryption(i,receiver_key)
+    print("Encrypted Text: ", i)
+    print("key: ",receiver_key)
+    if(plaintext==None):
+        print("Failure to decrypt with : ", receiver_key,"\n")
+    else:
+        print("Original Text: ", plaintext,"\n")
 
 # Brute Force Attack
 print("\n-----Attacker Space-----")
-result = generate_string_combinations(4)
-for i in result:
-    if(poly_decryption(ciphertext,i)==None):
-        continue
-    else:
-        print('key is ',i)
-        break
+keys = generate_string_combinations(4)
     
+# print(len(ciphertext_list))
+for cipher in ciphertext_list:
+    for key in keys:
+        plaintext = poly_decryption(cipher, key)
+        if(plaintext==None):
+            continue
+        else:
+            print("Original Text: ",plaintext)
+            print("key: ", key, "\n")
+            break
