@@ -7,7 +7,8 @@ Int_Char_Dict = {}
 for i in range(len(lowercase_letters)):
     Int_Char_Dict[i] = lowercase_letters[i]
     Char_Int_Dict[lowercase_letters[i]] = i
-
+Char_Int_Dict['_'] = 26
+Int_Char_Dict[26] = '_'
 
 def mapping_int_char(myArr):
     myString = ""
@@ -39,7 +40,7 @@ def hash_func(myString):
     for i in range(len(myMatrix)):
         for j in range(8):
             final_hash[j] = final_hash[j] ^ myMatrix[i][j]
-    hash_arr = [x%26 for x in final_hash]
+    hash_arr = [x%27 for x in final_hash]
     return mapping_int_char(hash_arr)
 
 def poly_encryption(plaintext,hashstring,key):
@@ -49,7 +50,7 @@ def poly_encryption(plaintext,hashstring,key):
     key_index = 0
     key_len = len(key)
     for i in range(len(plain_text_arr)):
-        new_arr.append((plain_text_arr[i] + key_arr[key_index]) % 26)
+        new_arr.append((plain_text_arr[i] + key_arr[key_index]) % 27)
         key_index +=1
         key_index = key_index % key_len
     ciphertext = mapping_int_char(new_arr)
@@ -62,7 +63,7 @@ def poly_decryption(ciphertext,key):
     key_index = 0
     key_len = len(key)
     for i in range(len(ciphertext_arr)):
-        new_arr.append((ciphertext_arr[i] - key_arr[key_index] + 26) % 26)
+        new_arr.append((ciphertext_arr[i] - key_arr[key_index] + 27) % 27)
         key_index +=1
         key_index = key_index % key_len
     itermediate_plain = mapping_int_char(new_arr)
@@ -88,7 +89,7 @@ sentences = [
     "moonlightdancesreflectmysticalbeautyacrossripplingwatersinspiringpoeticthoughtsandsweetmelodiesunderthestarrycanopyofnight"
 ]
 
-sender_key = "decc"
+sender_key = "dtly"
 ciphertext_list = []
 print("\n-----Sender Space-----")
 for i in sentences:
@@ -100,7 +101,7 @@ for i in sentences:
     print("key: ", sender_key,"\n")
     ciphertext_list.append(ciphertext)
 
-receiver_key = "decc"   
+receiver_key = "dtly"   
 print("\n-----Receiver Space-----")
 for i in ciphertext_list:
     plaintext = poly_decryption(i,receiver_key)
@@ -116,12 +117,16 @@ print("\n-----Attacker Space-----")
 keys = generate_string_combinations(4)
     
 # print(len(ciphertext_list))
-for cipher in ciphertext_list:
-    for key in keys:
+for key in keys:
+    final_key_check = True
+    for cipher in ciphertext_list:
         plaintext = poly_decryption(cipher, key)
         if(plaintext==None):
-            continue
+            final_key_check = False
+            break
         else:
             print("Original Text: ",plaintext)
-            print("key: ", key, "\n")
-            break
+            print("key that was succesful in decryption of a ciphertext: ", key, "\n")
+    if(final_key_check == True):
+        print("The correct key is : ", key, "\n")
+        break
