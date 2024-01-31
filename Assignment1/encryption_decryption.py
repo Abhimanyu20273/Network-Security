@@ -124,7 +124,7 @@ for key in keys:
             break
         else:
             print("Original Text: ",plaintext)
-            print("key that was succesful in decryption of a ciphertext: ", key, "\n")
+            print("key that was successful in decryption of a ciphertext: ", key, "\n")
     if(final_key_check == True):
         print("The correct key is : ", key, "\n")
         break
