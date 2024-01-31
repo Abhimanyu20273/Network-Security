@@ -73,7 +73,6 @@ def poly_decryption(ciphertext,key):
         print("Successful decrypt")
         return plaintext
     else:
-        # print("Failure")
         return None
     
 def generate_string_combinations(length):
@@ -116,7 +115,6 @@ for i in ciphertext_list:
 print("\n-----Attacker Space-----")
 keys = generate_string_combinations(4)
     
-# print(len(ciphertext_list))
 for key in keys:
     final_key_check = True
     for cipher in ciphertext_list:
