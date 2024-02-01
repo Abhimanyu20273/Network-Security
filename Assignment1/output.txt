@@ -1,0 +1,63 @@
+
+-----Sender Space-----
+Original text:  aliceenjoyedherwalkinthemagicalforestdiscoveringtinycreaturesandcolorfulflowerswhilelisteningtothebirdsinginginthebackground
+Hash Value:  jjobthed
+key:  dtly
+
+Original text:  curiousmindsexploreunknownworldsfindinghiddenknowledgeandunlockingmysteriesintheuniverseamidstchallengesandadventures
+Hash Value:  iaajosbd
+key:  dtly
+
+Original text:  playfulpuppieschasebutterfliesandrollinthesunnyfieldscreatingjoyousmomentsfilledwithlaughterandboundlessenergy
+Hash Value:  avwiaevq
+key:  dtly
+
+Original text:  wanderingthroughthelabyrinthofimaginationchildrencreatewhimsicalworldsfullofmagicalcreaturesandfantasticaladventures
+Hash Value:  tuicdmga
+key:  dtly
+
+Original text:  moonlightdancesreflectmysticalbeautyacrossripplingwatersinspiringpoeticthoughtsandsweetmelodiesunderthestarrycanopyofnight
+Hash Value:  baaajehb
+key:  dtly
+
+
+-----Receiver Space-----
+Encrypted Text:  mbzzw_paddt_hxygrqpakxbtddvfqlsbptrfftwcrjppwwtpfgfbuaydwayvfjpywmbbvtyafgwluyeiidzthjctkawboacqhftkjlzqkxmfuwcfqztkjayqkxmyfcrormya
+key:  dtly
+Original Text:  aliceenjoyedherwalkinthemagicalforestdiscoveringtinycreaturesandcolorfulflowerswhilelisteningtothebirdsinginginthebackground
+
+Encrypted Text:  ltlgrkmafmbfrmcjlfophp_irjprqcylzfgludopiayalfrelwobqcylzdpajxlkgmyirvvfqzxvvlpolxcfqlsbxftshjcbdetavlneddwbqzppdfoygnpkwmbbv
+key:  dtly
+Original Text:  curiousmindsexploreunknownworldsfindinghiddenknowledgeandunlockingmysteriesintheuniverseamidstchallengesandadventures
+
+Encrypted Text:  dngfdxfnsdlvimwmxh_fhknedkpzxldbuywfhklkgjzioayqkxcrqficlxwavvbbdltkjbzvrmcjrepkwkqfodpazadeotedklpodfozrmyaoxcphfpojq
+key:  dtly
+Original Text:  playfulpuppieschasebutterfliesandrollinthesunnyfieldscreatingjoyousmomentsfilledwithlaughterandboundlessenergy
+
+Encrypted Text:  wmt_geryztyahjtkjlsormrew_piduiolfderytjdztkdltlqvsfowbbqvbbdlptkaxplvlizgbigkqrodzcptrfftw_uxlqxjppdfocdfdyvlt_ddlayxyqxjpp
+key:  dtly
+Original Text:  wanderingthroughthelabyrinthofimaginationchildrencreatewhimsicalworldsfullofmagicalcreaturesandfantasticaladventures
+
+Encrypted Text:  etlymxszpgzkoarewwlkfxcohywbflxvvlt_ddmbdmdvdvblvkbfshwfqzgywxbplfcmljtkjhzbwanqkgedklcyqwcthxdjhdzalxcrqwpow_ppwtboavlkrhiliftdkl
+key:  dtly
+Original Text:  moonlightdancesreflectmysticalbeautyacrossripplingwatersinspiringpoeticthoughtsandsweetmelodiesunderthestarrycanopyofnight
+
+
+-----Attacker Space-----
+Original Text: aliceenjoyedherwalkinthemagicalforestdiscoveringtinycreaturesandcolorfulflowerswhilelisteningtothebirdsinginginthebackground
+Key that was successful in decryption of a ciphertext: dtly
+
+Original Text: curiousmindsexploreunknownworldsfindinghiddenknowledgeandunlockingmysteriesintheuniverseamidstchallengesandadventures
+Key that was successful in decryption of a ciphertext: dtly
+
+Original Text: playfulpuppieschasebutterfliesandrollinthesunnyfieldscreatingjoyousmomentsfilledwithlaughterandboundlessenergy
+Key that was successful in decryption of a ciphertext: dtly
+
+Original Text: wanderingthroughthelabyrinthofimaginationchildrencreatewhimsicalworldsfullofmagicalcreaturesandfantasticaladventures
+Key that was successful in decryption of a ciphertext: dtly
+
+Original Text: moonlightdancesreflectmysticalbeautyacrossripplingwatersinspiringpoeticthoughtsandsweetmelodiesunderthestarrycanopyofnight
+Key that was successful in decryption of a ciphertext: dtly
+
+The correct key is: dtly
+

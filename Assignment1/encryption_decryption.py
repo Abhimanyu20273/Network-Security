@@ -66,9 +66,9 @@ def poly_decryption(ciphertext,key):
         new_arr.append((ciphertext_arr[i] - key_arr[key_index] + 27) % 27)
         key_index +=1
         key_index = key_index % key_len
-    itermediate_plain = mapping_int_char(new_arr)
-    plaintext = itermediate_plain[8:]
-    hash_val = itermediate_plain[:8] 
+    intermediate_plain = mapping_int_char(new_arr)
+    plaintext = intermediate_plain[8:]
+    hash_val = intermediate_plain[:8] 
     if(hash_val == hash_func(plaintext)):
         print("Successful decrypt")
         return plaintext
@@ -80,17 +80,20 @@ def generate_string_combinations(length):
     combinations = [''.join(p) for p in product(alphabet, repeat=length)]
     return combinations
 
-sentences = [
-    "aliceenjoyedherwalkinthemagicalforestdiscoveringtinycreaturesandcolorfulflowerswhilelisteningtothebirdsinginginthebackground",
-    "curiousmindsexploreunknownworldsfindinghiddenknowledgeandunlockingmysteriesintheuniverseamidstchallengesandadventures",
-    "playfulpuppieschasebutterfliesandrollinthesunnyfieldscreatingjoyousmomentsfilledwithlaughterandboundlessenergy",
-    "wanderingthroughthelabyrinthofimaginationchildrencreatewhimsicalworldsfullofmagicalcreaturesandfantasticaladventures",
-    "moonlightdancesreflectmysticalbeautyacrossripplingwatersinspiringpoeticthoughtsandsweetmelodiesunderthestarrycanopyofnight"
-]
+file_path = 'input.txt'
+output_text = ""
+lines_list = []
+with open(file_path, 'r') as file:
+    for line in file:
+        lines_list.append(line.strip())  
+print(lines_list)
 
-sender_key = "dtly"
+sentences = lines_list[:5]
+
+sender_key = lines_list[5]
 ciphertext_list = []
 print("\n-----Sender Space-----")
+output_text += f"\n-----Sender Space-----\n"
 for i in sentences:
     original_text = i
     hash_value = hash_func(original_text)
@@ -98,21 +101,30 @@ for i in sentences:
     print("Original text: ",original_text)
     print("Hash Value: ",hash_value)
     print("key: ", sender_key,"\n")
+    output_text += f"Original text:  {original_text}\n"
+    output_text += f"Hash Value:  {hash_value}\n"
+    output_text += f"key:  {sender_key}\n\n"
     ciphertext_list.append(ciphertext)
 
-receiver_key = "dtly"   
+receiver_key = lines_list[6]   
 print("\n-----Receiver Space-----")
+output_text += f"\n-----Receiver Space-----\n"
 for i in ciphertext_list:
     plaintext = poly_decryption(i,receiver_key)
     print("Encrypted Text: ", i)
     print("key: ",receiver_key)
+    output_text += f"Encrypted Text:  {i}\n"
+    output_text += f"key:  {receiver_key}\n"
     if(plaintext==None):
         print("Failure to decrypt with : ", receiver_key,"\n")
+        output_text += f"Failure to decrypt with :  {receiver_key}\n\n"
     else:
         print("Original Text: ", plaintext,"\n")
+        output_text += f"Original Text:  {plaintext}\n\n"
 
 # Brute Force Attack
 print("\n-----Attacker Space-----")
+output_text += f"\n-----Attacker Space-----\n"
 keys = generate_string_combinations(4)
     
 for key in keys:
@@ -125,6 +137,14 @@ for key in keys:
         else:
             print("Original Text: ",plaintext)
             print("key that was successful in decryption of a ciphertext: ", key, "\n")
+            output_text += f"Original Text: {plaintext}\n"
+            output_text += f"Key that was successful in decryption of a ciphertext: {key}\n\n"
+            
     if(final_key_check == True):
         print("The correct key is : ", key, "\n")
+        output_text += f"The correct key is: {key}\n\n"
         break
+
+output_file_path = 'output.txt'
+with open(output_file_path, 'w') as output_file:
+    output_file.write(output_text)
