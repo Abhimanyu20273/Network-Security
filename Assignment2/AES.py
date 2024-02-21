@@ -12,6 +12,10 @@ for alphabet in "ABCDEF":
 	Char_Int_Dict[alphabet] = val
 	Int_Char_Dict[val] =  alphabet
 	val+=1
+
+
+
+
 def convert_to_matrix(myString,matrix):
 	byte_values = myString.split()
 	count = 0
@@ -34,13 +38,6 @@ def convert_int_hex(num):
 	else:
 		value = hex(num)[2].upper() + hex(num)[3].upper()
 	return value
-
-sbox = []
-for i in range(16):
-	row = []
-	for j in range(16):
-		row.append(convert_int_hex(randint(0,255)))
-	sbox.append(row)
 def Hex_Int_func_matrix(state_matrix):
 	new_matrix = []
 	for i in range(4):
@@ -65,7 +62,24 @@ def Int_Hex_func_matrix(state_matrix):
 		new_matrix.append(row)
 	return new_matrix
 
+sbox = []
+for i in range(16):
+	row = []
+	for j in range(16):
+		row.append(convert_int_hex(randint(0,255)))
+	sbox.append(row)
 
+matrix_MC = []
+for i in range(4):
+	row = []
+	for j in range(4):
+		row.append(randint(0,255))
+	matrix_MC.append(row)
+
+RC_hex = ["01","02","04","08","10","20","40","80","1B","36"]
+RCs = []
+for i in range(10):
+	RCs.append(convert_hex_int(RC_hex[i]))
 
 def add_round_key(state_matrix,key):
 	for i in range(4):
@@ -94,6 +108,42 @@ def shift_rows(state_matrix):
 		new_matrix.append(row)
 	return new_matrix
 
+def mix_column(state_matrix):
+	new_matrix = np.matmul(matrix_MC,state_matrix)
+	for i in range(4):
+		for j in range(4):
+			new_matrix[i][j] = new_matrix[i][j] % 256
+	return new_matrix
+
+def key_expansion(key_matrix,RC_num):
+	row = []
+	for i in range(4):
+		j = i + 1
+		if(j > 3):
+			j = j%4
+		row.append(key_matrix[0][j])
+	for j in range(4):
+		x = Char_Int_Dict[row[j][0]]
+		y = Char_Int_Dict[row[j][1]]
+		row[j] = sbox[x][y]
+
+
+	RC_arr = [RCs[RC_num],0,0,0]
+	key_matrix = Hex_Int_func_matrix(key_matrix)
+	output_row = []
+	for i in range(4):
+		output_row.append(convert_hex_int(row[i]) ^ RC_arr[i])
+
+	new_matrix = []
+	new_matrix.append(output_row)
+	output_row = []
+
+	for k in range(3):
+		for i in range(4):
+			output_row.append(new_matrix[k][i] ^ key_matrix[k + 1][i])
+		new_matrix.append(output_row)
+		output_row = []
+	return new_matrix
 
 plaintext = "0F 1D 29 3C 4B 6E 98 54 0F 1D 29 3C 4B 6E 98 54"
 state_matrix = []
@@ -110,14 +160,37 @@ state_matrix = Hex_Int_func_matrix(state_matrix)
 key_matrix = Hex_Int_func_matrix(key_matrix)
 state_matrix = add_round_key(state_matrix,key_matrix)
 
-#Substitute bytes
-state_matrix = Int_Hex_func_matrix(state_matrix)
-print(state_matrix)
-state_matrix = substitute_bytes(state_matrix)
-print(state_matrix)
+for m in range(10):
+	#Substitute bytes
+	state_matrix = Int_Hex_func_matrix(state_matrix)
+	# print(state_matrix)
+	state_matrix = substitute_bytes(state_matrix)
+	# print(state_matrix)
 
-#Shift rows
-state_matrix = shift_rows(state_matrix)
-print(state_matrix)
+	#Shift rows
+	state_matrix = shift_rows(state_matrix)
+
+	#Mix columns
+	state_matrix = Hex_Int_func_matrix(state_matrix)
+	# print(state_matrix)
+	state_matrix = mix_column(state_matrix)
+	# print(state_matrix)
+
+	#Key expansion
+	key_matrix = Int_Hex_func_matrix(key_matrix)
+	key_matrix = key_expansion(key_matrix,m)
+
+
+	#Add round key
+	state_matrix = add_round_key(state_matrix,key_matrix)
+	# print(state_matrix)
+
+state_matrix = Int_Hex_func_matrix(state_matrix)
+output_cipher = ""
+for i in range(4):
+	for j in range(4):
+		output_cipher = output_cipher + state_matrix[i][j] + " "
+
+print("The output cipher is {}".format(output_cipher))
 
 
