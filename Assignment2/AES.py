@@ -107,12 +107,35 @@ def shift_rows(state_matrix):
 			row.append(state_matrix[k][j])
 		new_matrix.append(row)
 	return new_matrix
+def int_bin(num):
 
+	bin_string = bin(num)[2:]
+	while(len(bin_string) != 8):
+		bin_string = "0" + bin_string
+	return bin_string
+def multiplication_GF28(num1,num2):
+	binary1 = int_bin(num1)
+	binary2 = int_bin(num2)
+	result = 0
+	mod_val = 283
+	for i in range(7,-1,-1):
+		if(binary1[i] == "1"):
+			result = result ^ num2
+		num2 = num2 << 1
+		if(binary2[0] == "1"):
+
+			num2 = num2 ^ mod_val
+		binary2 = int_bin(num2)
+	return result
+def multiply_rows(row1,row2):
+	return multiplication_GF28(row1[0],row2[0]) ^ multiplication_GF28(row1[1],row2[1]) ^ multiplication_GF28(row1[2],row2[2]) ^ multiplication_GF28(row1[3],row2[3])
 def mix_column(state_matrix):
-	new_matrix = np.matmul(matrix_MC,state_matrix)
+	new_matrix = []
 	for i in range(4):
+		row = []
 		for j in range(4):
-			new_matrix[i][j] = new_matrix[i][j] % 256
+			row.append(multiply_rows(matrix_MC[j],state_matrix[i]))
+		new_matrix.append(row)
 	return new_matrix
 
 def key_expansion(key_matrix,RC_num):
@@ -192,5 +215,3 @@ for i in range(4):
 		output_cipher = output_cipher + state_matrix[i][j] + " "
 
 print("The output cipher is {}".format(output_cipher))
-
-
