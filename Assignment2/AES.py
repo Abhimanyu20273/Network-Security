@@ -275,11 +275,11 @@ hexadecimal_to_char = {'0':'A', '1':'B', '2':'C', '3':'D', '4':'E', '5':'F', '6'
                 '10':'Q', '11':'R', '12':'S', '13':'T', '14':'U', '15':'V', '16':'W', '17':'X',
                 '18':'Y','19':'Z','a':'K', 'b':'L', 'c':'M', 'd':'N', 'e':'O', 'f':'P',}
 def convert_to_plain(final_state):
-  plain_text = ''
-  for i in range(0, len(final_state)):
-    for j in range(0, len(final_state[i])):
-      plain_text += hexadecimal_to_char[final_state[j][i]] #Converting hexadecimal to char
-  return plain_text
+	output_cipher = ""
+	for i in range(4):
+		for j in range(4):
+			output_cipher = output_cipher + final_state[i][j] + " "
+	return output_cipher
 
 def Decryption(ciphertext,subkey):
   original_state = [['','','',''],['','','',''],['','','',''],['','','','']]
@@ -312,7 +312,7 @@ def Decryption(ciphertext,subkey):
   intermediate_states.append(round0_state) 
 
   plain_text = convert_to_plain(intermediate_states[-1])
-  print("Decrypted Plain Text: "+plain_text)
+  print("Decrypted Plain Text: "+ plain_text)
   return plain_text, intermediate_states[-1], intermediate_states
 
 
