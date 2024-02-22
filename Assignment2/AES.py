@@ -346,7 +346,7 @@ if __name__ == '__main__':
 
 	state_matrix = add_round_key(state_matrix,key_matrix)
 
-	for m in range(10):
+	for m in range(9):
 		#Substitute bytes
 		state_matrix = Int_Hex_func_matrix(state_matrix)
 		# print(state_matrix)
@@ -371,6 +371,26 @@ if __name__ == '__main__':
 		state_matrix = add_round_key(state_matrix,key_matrix)
 		round_wise_keys.append(Int_Hex_func_matrix(key_matrix))
 		# print(state_matrix)
+
+	#Substitute bytes
+	state_matrix = Int_Hex_func_matrix(state_matrix)
+	# print(state_matrix)
+	state_matrix = substitute_bytes(state_matrix)
+	# print(state_matrix)
+
+	#Shift rows
+	state_matrix = shift_rows(state_matrix)
+
+	state_matrix = Hex_Int_func_matrix(state_matrix)
+	#Key expansion
+	key_matrix = Int_Hex_func_matrix(key_matrix)
+	key_matrix = key_expansion(key_matrix,9)
+
+	#Add round key
+	state_matrix = add_round_key(state_matrix,key_matrix)
+	round_wise_keys.append(Int_Hex_func_matrix(key_matrix))
+	# print(state_matrix)
+
 
 	state_matrix = Int_Hex_func_matrix(state_matrix)
 	output_cipher = ""
