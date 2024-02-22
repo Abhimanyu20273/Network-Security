@@ -338,10 +338,12 @@ if __name__ == '__main__':
 	dummy_key = "01 18 29 3D 44 65 95 53 1F 24 26 4C 46 34 56 AE"
 	key_matrix = convert_to_matrix(dummy_key,[])
 
-
+	round_wise_keys = []
+	round_wise_keys.append(key_matrix)
 	#Add round key
 	state_matrix = Hex_Int_func_matrix(state_matrix)
 	key_matrix = Hex_Int_func_matrix(key_matrix)
+
 	state_matrix = add_round_key(state_matrix,key_matrix)
 
 	for m in range(10):
@@ -367,6 +369,7 @@ if __name__ == '__main__':
 
 		#Add round key
 		state_matrix = add_round_key(state_matrix,key_matrix)
+		round_wise_keys.append(Int_Hex_func_matrix(key_matrix))
 		# print(state_matrix)
 
 	state_matrix = Int_Hex_func_matrix(state_matrix)
@@ -378,4 +381,5 @@ if __name__ == '__main__':
 	print("The output cipher is {}".format(output_cipher))
  
 	print("\nDecryption")
-	plain_text, final_state, all_decrypted_states = Decryption(output_cipher,key_matrix)
+	print(round_wise_keys)
+	plain_text, final_state, all_decrypted_states = Decryption(output_cipher,round_wise_keys)
