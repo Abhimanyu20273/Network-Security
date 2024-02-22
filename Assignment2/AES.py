@@ -196,35 +196,84 @@ def key_expansion(key_matrix,RC_num):
 
 
 #Decryption Function:
+character_int_value = {'0':0, '1':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, 'A':10, 'B':11, 'C':12, 'D':13, 'E':14, 'F':15, 'a':10, 'b':11, 'c':12, 'd':13, 'e':14, 'f':15}
+
+def calculate_xor(list1,list2):
+  xor_values = ['','','','']
+  for i in range(0,len(list1)):
+    a_1 = '0x' + list1[i] #Converting into hexa
+    i_1 = int(a_1,16)
+    a_2 = '0x' + list2[i]
+    i_2 = int(a_2,16)
+    a_3 = hex(i_1 ^ i_2)
+    xor_values[i] = a_3[2:]
+  return xor_values
+
+def addRound_key(list1,list2):
+  result = [[],[],[],[]]
+  for i in range(0,4):
+    result[i] = calculate_xor(list1[i], list2[i]) #Calculating XOR of key and the input text
+  return result
+
+overflow_value = 0x100
+modulus_value = 0x11B
+
+def gf28_multiply(a1, b1) :
+    sum_value = 0
+    while (b1 > 0) :
+        if (b1 & 1) :
+          sum_value = sum_value ^ a1        
+        b1 = b1 >> 1                      
+        a1 = a1 << 1                          
+        if (a1 & overflow_value) :
+          a1 = a1 ^ modulus_value   
+    return sum_value
 
 def inverse_substitution_bytes(list1):
-	for i in range(4):
-		for j in range(4):
-			xy = state_matrix[i][j]
-			x = Char_Int_Dict[xy[0]]
-			y = Char_Int_Dict[xy[1]]
-			state_matrix[i][j] = inv_s_box[x][y]
-	return state_matrix
+  for i in range(0, len(list1)):
+    for j in range(0, len(list1[i])):
+      if (len(list1[i][j]) == 1):
+        list1[i][j] = '0'+list1[i][j]
+      s = list1[i][j]
+      c_0 = character_int_value[s[0]]
+      c_1 = character_int_value[s[1]]
+      value = inv_s_box[c_0][c_1] #Substituting the values from Inverse S Box
+      list1[i][j] = value
+  return list1
 
-def right_shift_rows(state_matrix):
+def right_shift_rows(string_matrix):
   result = [['','','',''],['','','',''],['','','',''],['','','','']]
-  for i in range(0,len(state_matrix)):
-    current_row = state_matrix[i]
+  for i in range(0,len(string_matrix)):
+    current_row = string_matrix[i]
     for j in range(0,len(current_row)):
-      result[i][j]=state_matrix[i][(j-i)%4] #Shifting the 2nd,3rd and 4th rows right by 1,2,3 bytes respectively
+      result[i][j]=string_matrix[i][(j-i)%4] #Shifting the 2nd,3rd and 4th rows right by 1,2,3 bytes respectively
   return result
 
 inverse_mix_columns_matrix = [[14,11,13,9],[9,14,11,13],[13,9,14,11],[11,13,9,14]]
 
-def inverse_mix_Columns(state_matrix):
-	new_matrix = []
-	for i in range(4):
-		row = []
-		for j in range(4):
-			row.append(multiply_rows(inverse_mix_columns_matrix[j],state_matrix[i]))
-			new_matrix.append(row)
-		return new_matrix
+def inverse_mix_Columns(state):
+  result = [['','','',''],['','','',''],['','','',''],['','','','']]
+  result_mat = [[0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]]
+  for i in range(0,len(state)):
+    for j in range(0, len(state[i])):
+      for k in range(0,len(state)):
+        value_1 = '0x'+state[k][j]
+        value_1 = int(value_1,16)
+        result_mat[i][j] ^= gf28_multiply(inverse_mix_columns_matrix[i][k],value_1) #Multiplying the matrices in GF(2^8)
 
+  for i in range(0,len(state)):
+    for j in range(0,len(state[i])):
+      result[i][j] = str(hex(result_mat[i][j]))[2:]
+  # print(result)
+  return result
+
+hexadecimal_to_char = {'0':'A', '1':'B', '2':'C', '3':'D', '4':'E', '5':'F', '6':'G', '7':'H', 
+                '8':'I', '9':'J', 'A':'K', 'B':'L', 'C':'M', 'D':'N', 'E':'O', 'F':'P', 
+                '10':'Q', '11':'R', '12':'S', '13':'T', '14':'U', '15':'V', '16':'W', '17':'X',
+                '18':'Y','19':'Z','a':'K', 'b':'L', 'c':'M', 'd':'N', 'e':'O', 'f':'P',}
 def convert_to_plain(final_state):
 	output_cipher = ""
 	for i in range(4):
@@ -233,51 +282,48 @@ def convert_to_plain(final_state):
 	return output_cipher
 
 def Decryption(ciphertext,subkey):
-  state_matrix = []
-  state_matrix = convert_to_matrix(ciphertext,state_matrix)
+  original_state = [['','','',''],['','','',''],['','','',''],['','','','']]
+  for i in range(0,16):
+    original_state[int(i%4)][int(i/4)] = hex(ord(ciphertext[i]))[2:]
 
-  print("State matrix",state_matrix)
 
   intermediate_states = []
-  state_matrix = Hex_Int_func_matrix(state_matrix)
-  
-	#Round 0
-  round0_key = subkey[10]
-  key_matrix = Hex_Int_func_matrix(round0_key)
-  print("Key 0: ", key_matrix)
-  round0_state = add_round_key(state_matrix, key_matrix)
-  print("Round 0: "+str(round0_state))
-  intermediate_states.append(round0_state) 
-   
-   #Round 9-1
+
+  #Round 10
+  state_1 = addRound_key(subkey[10],original_state) #Subkeys of round 10 - Used in reverse order
+  state_2 = right_shift_rows(state_1)
+  state_3 = inverse_substitution_bytes(state_2)
+  print("Round 1: "+str(state_3))
+  intermediate_states.append(state_3)
+
+  #Round 9-1
   for round in range(9,0,-1):
-    state_1 = right_shift_rows(intermediate_states[-1])
-    state_2 = inverse_substitution_bytes(state_1)
-    state_2 = Hex_Int_func_matrix(state_2)
-    key_matrix = Hex_Int_func_matrix(subkey[round])
-    state_3 = add_round_key(key_matrix,state_2)
-    state_4 = inverse_mix_Columns(state_3)
-    print("Round "+str(10-round)+" :"+str(state_4))
+    state_1 = addRound_key(subkey[round],intermediate_states[-1])
+    state_2 = inverse_mix_Columns(state_1)
+    state_3 = right_shift_rows(state_2)
+    state_4 = inverse_substitution_bytes(state_3)
+    print("Round "+str(11-round)+" :"+str(state_4))
     intermediate_states.append(state_4)
   
-  #Round 10
-  state_1 = right_shift_rows(intermediate_states[-1])#Subkeys of round 10 - Used in reverse order
-  state_2 = inverse_substitution_bytes(state_1)
-  state_2 = Hex_Int_func_matrix(state_2)
-  key_matrix = Hex_Int_func_matrix(subkey[round])
-  state_3 = add_round_key(key_matrix,state_2) 
-  print("Round 10: ",Int_Hex_func_matrix(intermediate_states[-1]))
-  intermediate_states.append(state_3)
-  print("Final Matrix",Int_Hex_func_matrix(intermediate_states[-1]))
-  
+  #Round 0
+  round0_key = subkey[0]
+  round0_state = addRound_key(round0_key, intermediate_states[-1])
+  print("Round 0: "+str(round0_state))
+  intermediate_states.append(round0_state) 
 
-#   plain_text = convert_to_plain(intermediate_states[-1])
-#   print("Decrypted Plain Text: "+ plain_text)
-#   return plain_text, intermediate_states[-1], intermediate_states
+  plain_text = convert_to_plain(intermediate_states[-1])
+  print("Decrypted Plain Text: "+ plain_text)
+  return plain_text, intermediate_states[-1], intermediate_states
 
 
 if __name__ == '__main__':
-
+	# matrix_MC = []
+	# for i in range(4):
+	# 	row = []
+	# 	for j in range(4):
+	# 		row.append(randint(0,255))
+	# 	matrix_MC.append(row)
+ 
 	matrix_MC = [[2,3,1,1],[1,2,3,1],[1,1,2,3],[3,1,1,2]]
 
 	RC_hex = ["01","02","04","08","10","20","40","80","1B","36"]
@@ -286,13 +332,10 @@ if __name__ == '__main__':
 		RCs.append(convert_hex_int(RC_hex[i]))
 
 	plaintext = "0F 1D 29 3C 4B 6E 98 54 0F 1D 29 3C 4B 6E 98 54"
-	print("Original Plain Text: ",plaintext)
 	state_matrix = []
 	state_matrix = convert_to_matrix(plaintext,state_matrix)
-	print("16 byte plain text Matrix", state_matrix)
 
 	dummy_key = "01 18 29 3D 44 65 95 53 1F 24 26 4C 46 34 56 AE"
-	print("Key: ", dummy_key)
 	key_matrix = convert_to_matrix(dummy_key,[])
 
 	round_wise_keys = []
@@ -303,7 +346,7 @@ if __name__ == '__main__':
 
 	state_matrix = add_round_key(state_matrix,key_matrix)
 
-	for m in range(10):
+	for m in range(9):
 		#Substitute bytes
 		state_matrix = Int_Hex_func_matrix(state_matrix)
 		# print(state_matrix)
@@ -329,6 +372,26 @@ if __name__ == '__main__':
 		round_wise_keys.append(Int_Hex_func_matrix(key_matrix))
 		# print(state_matrix)
 
+	#Substitute bytes
+	state_matrix = Int_Hex_func_matrix(state_matrix)
+	# print(state_matrix)
+	state_matrix = substitute_bytes(state_matrix)
+	# print(state_matrix)
+
+	#Shift rows
+	state_matrix = shift_rows(state_matrix)
+
+	state_matrix = Hex_Int_func_matrix(state_matrix)
+	#Key expansion
+	key_matrix = Int_Hex_func_matrix(key_matrix)
+	key_matrix = key_expansion(key_matrix,9)
+
+	#Add round key
+	state_matrix = add_round_key(state_matrix,key_matrix)
+	round_wise_keys.append(Int_Hex_func_matrix(key_matrix))
+	# print(state_matrix)
+
+
 	state_matrix = Int_Hex_func_matrix(state_matrix)
 	output_cipher = ""
 	for i in range(4):
@@ -339,5 +402,4 @@ if __name__ == '__main__':
  
 	print("\nDecryption")
 	print(round_wise_keys)
-	# plain_text, final_state, all_decrypted_states = 
-	Decryption(output_cipher,round_wise_keys)
+	plain_text, final_state, all_decrypted_states = Decryption(output_cipher,round_wise_keys)
