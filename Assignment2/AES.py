@@ -317,12 +317,14 @@ def Decryption(ciphertext,subkey):
 
 
 if __name__ == '__main__':
-	matrix_MC = []
-	for i in range(4):
-		row = []
-		for j in range(4):
-			row.append(randint(0,255))
-		matrix_MC.append(row)
+	# matrix_MC = []
+	# for i in range(4):
+	# 	row = []
+	# 	for j in range(4):
+	# 		row.append(randint(0,255))
+	# 	matrix_MC.append(row)
+ 
+	matrix_MC = [[2,3,1,1],[1,2,3,1],[1,1,2,3],[3,1,1,2]]
 
 	RC_hex = ["01","02","04","08","10","20","40","80","1B","36"]
 	RCs = []
