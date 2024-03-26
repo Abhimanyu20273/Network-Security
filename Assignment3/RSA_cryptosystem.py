@@ -22,6 +22,7 @@ def generate_keys():
 		test_value = test_value + 1
 	d = mod_inverse(e, phi)
 	return (n,e),(n,d)
+
 def convert_to_int(text):
 	ASCII_list = []
 	for character in text:
@@ -50,6 +51,8 @@ def decrypt(ciphertext,n,d):
 	return plaintext
 
 pu,pk = generate_keys()
+print("Encryption Key: ", pu)
+print("Decryption Key: ", pk)
 cipher = encrypt("Hello! How are you?",pu[0],pu[1])
 print(cipher)
 plain = decrypt(cipher,pk[0],pk[1])
