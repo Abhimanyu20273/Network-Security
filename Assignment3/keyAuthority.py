@@ -4,6 +4,9 @@ from RSA_cryptosystem import encrypt, decrypt, generate_keys
 
 pu,pk = generate_keys()
 
+public_key_A = [4690332187, 2345097609]
+public_key_B = [5509350589, 2754601071]
+
 pu_bytes = bytes(pu[0].to_bytes(256, 'big') + pu[1].to_bytes(256, 'big'))
 
 s = socket.socket()

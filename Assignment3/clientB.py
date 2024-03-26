@@ -1,9 +1,9 @@
 import socket
-from RSA_cryptosystem import encrypt, decrypt, generate_keys
+from RSA_cryptosystem import encrypt, decrypt
 
-pu, pk = generate_keys()
 
-pu_bytes = bytes(pu[0].to_bytes(256, 'big') + pu[1].to_bytes(256, 'big'))
+publickey = [5509350589, 2754601071]
+privatekey = [5509350589, 2754601071]
 
 s = socket.socket()
 
@@ -18,6 +18,5 @@ pu_Authority = (int.from_bytes(pu_auth_bytes[:256], 'big'), int.from_bytes(pu_au
 
 print("Received public key of authority: ",pu_Authority)
 
-s.send(pu_bytes)
 
-# s.close()
+s.close()

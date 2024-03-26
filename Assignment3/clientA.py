@@ -1,6 +1,9 @@
 import socket             
-from RSA_cryptosystem import encrypt, decrypt, generate_keys
- 
+from RSA_cryptosystem import encrypt, decrypt
+
+public_key = [4690332187, 2345097609]
+private_key =  [4690332187, 2345097609]
+
 s = socket.socket()         
 
 port = 12345               
@@ -12,4 +15,4 @@ pu_Authority = (int.from_bytes(pu_bytes[:256], 'big'), int.from_bytes(pu_bytes[2
 
 print("Received public key of authority: ",pu_Authority)
 
-# s.close()
+s.close()
