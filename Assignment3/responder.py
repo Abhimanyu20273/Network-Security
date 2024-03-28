@@ -43,12 +43,12 @@ def responder():
     while True:
         socket_pkda.send_string(message)
         response = socket_pkda.recv_string()
-        print(f'Encrypted response: {response}')
         # Decrypt the message using PKDA's public key
         decrypted_response = decrypt(response, pkda_public_key)
-        print(f'Decrypted response: {decrypted_response}')
         public_key_client1 = decrypted_response.split('||')[0]
         if public_key_client1 != 'NOK':
+            print(f'Encrypted response received: {response}')
+            print(f'Decrypted response: {decrypted_response}')
             break
         # If the key is not available yet, wait for 1 sec and try again
         print('Waiting for client1 public key')

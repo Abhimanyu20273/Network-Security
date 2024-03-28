@@ -45,12 +45,12 @@ def initiator():
     while True:
         socket_pkda.send_string(message)
         response = socket_pkda.recv_string()
-        print(f'Encrypted response: {response}')
         # Decrypt the message using PKDA's public key
         decrypted_response = decrypt(response, pkda_public_key)
-        print(f'Decrypted response: {decrypted_response}')
         public_key_client2 = decrypted_response.split('||')[0]
         if public_key_client2 != 'NOK':
+            print(f'Encrypted response received: {response}')
+            print(f'Decrypted response: {decrypted_response}')
             break
         # If the key is not available yet, wait for 1 sec and try again
         print('Waiting for client2 public key')
@@ -69,7 +69,7 @@ def initiator():
     message = encrypt(message, public_key_client2)
     socket_responder.send_string(message)
     response = socket_responder.recv_string()
-    print(f'Encrypted response: {response}')
+    print(f'Encrypted response received: {response}')
     # Decrypt with private key of self
     response = decrypt(response, self_key_pair["private_key"])
     print(f'Decrypted response: {response}')
@@ -86,7 +86,7 @@ def initiator():
     print(f'Encrypted to: {message}')
     socket_responder.send_string(message)
     response = socket_responder.recv_string()
-    print(f'Encrypted response: {response}')
+    print(f'Encrypted response received: {response}')
     # Decrypt with private key of self
     response = decrypt(response, self_key_pair["private_key"])
     print(f'Decrypted response: {response}')
@@ -103,7 +103,7 @@ def initiator():
         print(f'Encrypted to: {message}')
         socket_responder.send_string(message)
         response = socket_responder.recv_string()
-        print(f'Encrypted response: {response}')
+        print(f'Encrypted response received: {response}')
         # Decrypt with private key of self
         response = decrypt(response, self_key_pair["private_key"])
         print(f'Decrypted response: {response}') 
