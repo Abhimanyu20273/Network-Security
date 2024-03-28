@@ -64,6 +64,7 @@ def decrypt(ciphertext, key):
 	plaintext = convert_to_string(plaintext_int)
 	# print(f'Decrypted to {plaintext}')
 	return plaintext
+
 if __name__ == '__main__':
 	pu,pk = generate_keys()
 	print(f'Public key: {pu}')
@@ -72,4 +73,3 @@ if __name__ == '__main__':
 	print(f'Cipher: {cipher}')
 	plain = decrypt(cipher,pk[0],pk[1])
 	print(f'Message: {plain}')
-
