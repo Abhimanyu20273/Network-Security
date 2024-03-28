@@ -1,0 +1,30 @@
+Assumptions:
+1. The public/private key of the PKDA is known to the PKDA. The public key of the PKDA is known to all clients as a shared file.
+2. Each client generates its own public/private key. It encrypts its public key using the public key of the PKDA and sends it to the PKDA. The PKDA decypts it with its own private key and stores it.
+3. Requests from a client to the PKDA need not be encrypted since they carry no confidential information. If client 1 asks the PKDA for the public key of client 2, the PKDA encrypts it using PKDA's private key and sends it to client 1. Client 1 then decrypts it using PKDA's public key.
+4. Similarly client 2 gets the public key of client 1 from the PKDA.
+5. Client 1 then encrypts its message with the public key of client 2 and sends it to client 2, which decrypts it using its own private key.
+6. Client 2 encrypts its response with the public key of client 1 and sends. Client 1 decrypts with its private key.
+
+To Do:
+1. Set up RSA based crypto system
+	1.1 Generate public & private key
+	1.2 Encrypt with public key and decrypt with private key
+
+Methods needed:
+
+PKDA listener can get 2 types of messages:
+	- Save <client_id> <public_key>  ---> Returns OK
+	- Get <client_id>   ---> Returns public key of client_id
+
+Initiator and responder, both need a send_and_receive method:
+	- Save <client_id> <public_key>  ---> Gets OK or repeats the send_and_receive
+	- Get <client_id>   ---> Gets public key of client_id
+
+Initiator needs a send_and_receive method:
+	- Send encrypted message of nonces  ---> Get back nonces plus responder's nonces  ---> Send back responder's nonces ---> No response expected or get OK
+	- Send actual message ---> Get actual response
+
+Responder needs a listener:
+	- Receive encrypted message of nonces ---> Send back nonces plus own nonces
+	- Receive back own nonces ---> send OK
