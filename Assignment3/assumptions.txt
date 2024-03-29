@@ -15,7 +15,7 @@ Methods needed:
 
 PKDA listener can get 2 types of messages:
 	- Save <client_id> <public_key>  ---> Returns OK
-	- Get <client_id>   ---> Returns public key of client_id
+	- Get <client_id>||<time>   ---> Returns public key of client_id
 
 Initiator and responder, both need a send_and_receive method:
 	- Save <client_id> <public_key>  ---> Gets OK or repeats the send_and_receive
