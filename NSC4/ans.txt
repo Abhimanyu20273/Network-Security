@@ -1,0 +1,26 @@
+1. How and where do you get the correct GMT date and time? Is the source reliable and the GMT date and time obtained in a secure manner? The term ‘obtained’ refers to security of
+communication.
+Ans: We have used the https://worldtimeapi.org API to fetch the current UTC time. Worldtimeapi is a well known and reputed provider of time data. The fact that the API request uses https ensures security.
+curl https://worldtimeapi.org/api/timezone/Etc/UTC
+
+2. How do you ensure that only the graduate is able to download it (by providing information beyond the roll no, such as date of birth, home pin code, etc.?
+Ans: We have asked the user to provide additional information about themselves to authenticate them. We have used the last 4 digits of Aadhar number.
+
+3. Should the graduate decide to share the document with others, how can one trace the origin of the document (could watermarks be useful?)?
+Ans: Watermark is useful to help trace the origin of the document. We have added it to the PDF.
+
+4. Do we need to have access to public-keys, and if so whose? And how?
+Ans: We need public keys of both signatories which we will get from the PKDA. The code therefore needs access to only the PKDA's public key.
+
+
+Question: (1) Do we need to create our version of a digital signature using Hash and RSA keys? (2) If so, can we use Python Hashlib to get SHA256 hash? (3) Can we send the digital signature along with the the PDF file in the API response, or does it have to be part of the PDF? 
+
+
+Flow:
+Webpage sends a request to backend with Student Name, Roll No. amd last 4 digits of Aadhar. 
+API responds with the contents of the PDF file and 2 signatures. Each signature when decrypted contains a hash concatenated with time of signature generation.
+
+A Public Key Authority provides the Public Keys of both signatories. A different API end-point is used for the PKDA.
+
+The verify_signature application decrypts the digital signatures of the registrar and director, generates the hash and compares.
+

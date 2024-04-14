@@ -1,0 +1,6 @@
+PyPDF4
+reportlab
+weasyprint
+Flask
+Flask-Cors
+requests

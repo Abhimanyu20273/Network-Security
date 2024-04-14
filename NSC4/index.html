@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Degree Download</title>
+<script>
+
+// Create an async function to allow usage of await
+async function downloadPDF(val) {
+
+  // Retrieve the values entered in the 3 input fields
+  var name = document.getElementById('name').value;
+  var roll_num = document.getElementById('roll_num').value;
+  var aadhar_last_4_digits = document.getElementById('aadhar_last_4_digits').value;
+
+  let url;
+    // Check the value of 'val' and set the URL accordingly
+    if (val === 1) {
+      url = `http://127.0.0.1:5001/get_document?name=${name}&roll_num=${roll_num}&aadhar_last_4_digits=${aadhar_last_4_digits}&doc_type=Degree`;
+    } else {
+      url = `http://127.0.0.1:5001/get_document?name=${name}&roll_num=${roll_num}&aadhar_last_4_digits=${aadhar_last_4_digits}&doc_type=Grade-Card`;
+    }
+  try {
+    // Send a fetch request to the API and then wait till it completes.
+    const response = await fetch(url);
+    // Throw an error in case of failure
+    if (!response.ok) throw new Error('No such record found');
+
+    // Extract the relevant information from the response headers
+    const Signature1 = response.headers.get('Signature1');
+    const Signature2 = response.headers.get('Signature2');
+    const fileName = response.headers.get('fileName');
+
+    // Process the PDF blob
+    // Convert the response into a Blob object, which is the PDF file to be downloaded.
+    const blob = await response.blob();
+    //  create a new FileReader object to read the contents of the Blob.
+    const reader = new FileReader();
+    //  set up an event handler that will be called when the FileReader has finished reading the Blob
+    reader.onload = function() {
+      // retrieve the result of the FileReader’s read operation, which is a data URL representing the PDF file.
+      const url = reader.result;
+      // create a new anchor (<a>) element in the document.
+      const a = document.createElement('a');
+      // set the href attribute of the anchor element to the data URL
+      a.href = url;
+      a.download = fileName;
+      // append the anchor element to the body of the document
+      document.body.appendChild(a);
+      // Programmatically click the anchor element, which triggers the file download. 
+      a.click();
+
+      // Display the two signatures
+      document.getElementById('Signature1').textContent = Signature1;
+      document.getElementById('Signature2').textContent = Signature2;
+    };
+    reader.readAsDataURL(blob);
+  } catch (error) {
+    console.error('Fetch error:', error);
+    document.getElementById('error-message').textContent = error.message;
+  }
+}
+</script>
+<style>
+  body {
+    font-family: 'Helvetica', sans-serif;
+    text-align: left;
+  }
+  h2 {
+    text-align: center; 
+  }
+  .container {
+    margin: 0 auto;
+    width: 50%;
+  }
+  input, button {
+    margin: 10px 0;
+    font-size: 16px;
+  }
+  .output-box {
+    border: 1px solid #000;
+    margin-top: 20px;
+    width: 50%;
+    word-wrap: break-word;
+    height: 12em; /* Set the height to accommodate 8 lines of text */
+    overflow-y: auto; /* Add a scrollbar if the content overflows */
+  }
+  .error-txt {
+    color: firebrick;
+    font-size: 28px;
+  }
+</style>
+</head>
+<body>
+<h2>Download your degree</h2>
+<label for="name">Your name:</label>
+<input type="text" id="name" name="name"><br>
+<label for="roll_num">Your roll number:</label>
+<input type="text" id="roll_num" name="roll_num"><br>
+<label for="aadhar_last_4_digits">The last 4 digits of your Aadhar number:</label>
+<input type="text" id="aadhar_last_4_digits" name="aadhar_last_4_digits"><br>
+<button onclick="downloadPDF(1)">Download Degree</button>
+<button onclick="downloadPDF(2)">Download Grade-Card</button>
+
+<div class="error-txt" id="error-message"></div>
+
+<p class="label">Registrar's Signature:</p>
+<div class="output-box" id="Signature1">Signature1: </div>
+<p class="label">Director's Signature:</p>
+<div class="output-box" id="Signature2">Signature2: </div>
+</body>
+</html>
